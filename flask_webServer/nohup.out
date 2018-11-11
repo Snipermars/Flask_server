@@ -1,0 +1,8 @@
+ * Serving Flask app "flask_webServer" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
+140.207.54.75 - - [25/Oct/2018 20:26:33] "POST /?signature=d87553ead4672fd71214be09a1b78924b3b15b72&timestamp=1540470393&nonce=1588409796&openid=oXkmA1uWzJtrNf5H41SNDSyixK4s&encrypt_type=aes&msg_signature=9d60484a5e80b2da6ca4e6eb9a18396e7de8470c HTTP/1.1" 200 -
+<qrcode.image.pil.PilImage object at 0x7f5b07d6a050>

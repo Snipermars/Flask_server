@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="606dac04-4674-4c9c-a6e8-5494e6f0d75f" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-321352282">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="14160" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="14160" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="16" />
+          <entry key="txt" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="Python" value="16" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.38042814">
+      <split-first>
+        <leaf>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/flask_webServer.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="3164">
+                  <caret line="373" selection-start-line="373" selection-end-line="379" selection-end-column="42" />
+                  <folding>
+                    <element signature="e#44#54#0" expanded="true" />
+                    <element signature="e#647#3019#0" />
+                    <marker date="1540985723029" expanded="true" signature="3068:4122" ph="..." />
+                    <marker date="1540985723029" expanded="true" signature="10715:10749" ph="..." />
+                    <marker date="1540985723029" expanded="true" signature="14754:14756" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/flask/templating.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="153">
+                  <caret line="124" column="64" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://E:/pycharm/webserver_liao/www/orm.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="568">
+                  <caret line="231" column="85" lean-forward="true" selection-start-line="231" selection-start-column="12" selection-end-line="231" selection-end-column="85" />
+                  <folding>
+                    <element signature="e#135#159#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://E:/pycharm/webserver_liao/www/models.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="-1">
+                  <folding>
+                    <element signature="e#136#153#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/www/FlaskWebServer_2.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="-2922">
+                  <caret line="225" column="94" lean-forward="true" selection-start-line="225" selection-start-column="8" selection-end-line="225" selection-end-column="94" />
+                  <folding>
+                    <element signature="e#977#3349#0" />
+                    <element signature="e#4117#4578#0" />
+                    <element signature="e#4628#5767#0" />
+                    <element signature="e#5733#6081#0" />
+                    <element signature="e#4634#5763#0" />
+                    <marker date="1541550784507" expanded="true" signature="4669:5722" ph="..." />
+                    <marker date="1541550784507" expanded="true" signature="5763:6122" ph="..." />
+                    <marker date="1541550784507" expanded="true" signature="6200:7272" ph="..." />
+                    <marker date="1541550784507" expanded="true" signature="9077:9196" ph="..." />
+                    <marker date="1541550784507" expanded="true" signature="9260:14011" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/www/orm.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="599">
+                  <caret line="230" column="85" lean-forward="true" selection-start-line="230" selection-start-column="85" selection-end-line="230" selection-end-column="85" />
+                  <folding>
+                    <element signature="e#131#155#0" expanded="true" />
+                    <marker date="1541642169194" expanded="true" signature="234:239" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="304:309" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="812:817" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="1246:1251" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="1778:1783" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="2974:3810" ph="..." />
+                    <marker date="1541642169194" expanded="true" signature="4782:4783" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/www/orm_version_1.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="5021">
+                  <caret line="326" column="56" lean-forward="true" selection-start-line="326" selection-start-column="56" selection-end-line="326" selection-end-column="56" />
+                  <folding>
+                    <element signature="e#141#165#0" expanded="true" />
+                    <marker date="1541685256520" expanded="true" signature="272:277" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="2332:2470" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="3185:3204" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="3350:3411" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="3375:3380" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="3435:3441" ph="..." />
+                    <marker date="1541685256520" expanded="true" signature="3436:3437" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/config/Timer_report.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="242">
+                  <caret line="11" selection-start-line="11" selection-end-line="11" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/www/models.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="220">
+                  <caret line="10" column="71" selection-start-line="10" selection-start-column="71" selection-end-line="10" selection-end-column="71" />
+                  <folding>
+                    <element signature="e#135#152#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/www/views.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="176">
+                  <caret line="8" selection-start-line="8" selection-end-line="8" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/config/Regex_class.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="220">
+                  <caret line="10" column="20" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="20" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>菜单</find>
+      <find>eventkey</find>
+      <find>key</find>
+      <find>access_token</find>
+      <find>datetime</find>
+      <find>post_menu</find>
+      <find>redirect_uri</find>
+      <find>return</find>
+      <find>save</find>
+      <find>SaveQRcode</find>
+      <find>img_result</find>
+      <find>concat_qrcode</find>
+      <find>qrcode_result</find>
+      <find>Post</find>
+      <find>index</find>
+      <find>index.html</find>
+      <find>lx_token</find>
+      <find>print</find>
+      <find>QrCode_order</find>
+      <find>global</find>
+      <find>lx_access_token</find>
+      <find>state</find>
+      <find>token</find>
+      <find>create_args_string</find>
+      <find>redirect</find>
+    </findStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/flask_webServer.py" />
+        <option value="$PROJECT_DIR$/config/Regex_class.py" />
+        <option value="$PROJECT_DIR$/config/Timer_report.py" />
+        <option value="$PROJECT_DIR$/FlaskWebServer_2.py" />
+        <option value="$PROJECT_DIR$/config/PASS_secret.py" />
+        <option value="$PROJECT_DIR$/www/views.py" />
+        <option value="$PROJECT_DIR$/www/smtp_qq.py" />
+        <option value="$PROJECT_DIR$/www/FlaskWebServer_2.py" />
+        <option value="$PROJECT_DIR$/www/models.py" />
+        <option value="$PROJECT_DIR$/www/orm.py" />
+        <option value="$PROJECT_DIR$/www/orm_version_1.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="325" />
+    <option name="y" value="25" />
+    <option name="width" value="1750" />
+    <option name="height" value="1250" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="flask_webServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="flask_webServer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="flask_webServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="flask_webServer" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="flask_webServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="flask_webServer" type="462c0819:PsiDirectoryNode" />
+              <item name="www" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="E:/pycharm/webserver_liao/www/orm.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\IdeaProjects\flask_webServer\www" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="smtp_qq" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="flask_webServer" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/www/smtp_qq.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.smtp_qq" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="606dac04-4674-4c9c-a6e8-5494e6f0d75f" name="Default Changelist" comment="" />
+      <created>1540775951197</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1540775951197</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13856691" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Python Console" weight="0.329718" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.2483731" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.329718" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/datetime.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="47">
+          <caret line="1359" column="6" selection-start-line="1359" selection-start-column="6" selection-end-line="1359" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/flask_webServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3164">
+          <caret line="373" selection-start-line="373" selection-end-line="379" selection-end-column="42" />
+          <folding>
+            <element signature="e#44#54#0" expanded="true" />
+            <element signature="e#647#3019#0" />
+            <marker date="1540985723029" expanded="true" signature="3068:4122" ph="..." />
+            <marker date="1540985723029" expanded="true" signature="10715:10749" ph="..." />
+            <marker date="1540985723029" expanded="true" signature="14754:14756" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/Regex_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="20" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/Timer_report.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/smtp_qq.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="30" column="17" lean-forward="true" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
+          <folding>
+            <element signature="e#151#165#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/PASS_secret.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/flask/templating.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="124" column="64" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/pycharm/webserver_liao/www/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1">
+          <folding>
+            <element signature="e#136#153#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="71" selection-start-line="10" selection-start-column="71" selection-end-line="10" selection-end-column="71" />
+          <folding>
+            <element signature="e#135#152#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/orm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="599">
+          <caret line="230" column="85" lean-forward="true" selection-start-line="230" selection-start-column="85" selection-end-line="230" selection-end-column="85" />
+          <folding>
+            <element signature="e#131#155#0" expanded="true" />
+            <marker date="1541642169194" expanded="true" signature="234:239" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="304:309" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="812:817" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="1246:1251" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="1778:1783" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="2974:3810" ph="..." />
+            <marker date="1541642169194" expanded="true" signature="4782:4783" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/FlaskWebServer_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2922">
+          <caret line="225" column="94" lean-forward="true" selection-start-line="225" selection-start-column="8" selection-end-line="225" selection-end-column="94" />
+          <folding>
+            <element signature="e#977#3349#0" />
+            <element signature="e#4117#4578#0" />
+            <element signature="e#4628#5767#0" />
+            <element signature="e#5733#6081#0" />
+            <element signature="e#4634#5763#0" />
+            <marker date="1541550784507" expanded="true" signature="4669:5722" ph="..." />
+            <marker date="1541550784507" expanded="true" signature="5763:6122" ph="..." />
+            <marker date="1541550784507" expanded="true" signature="6200:7272" ph="..." />
+            <marker date="1541550784507" expanded="true" signature="9077:9196" ph="..." />
+            <marker date="1541550784507" expanded="true" signature="9260:14011" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/pycharm/webserver_liao/www/orm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="568">
+          <caret line="231" column="85" lean-forward="true" selection-start-line="231" selection-start-column="12" selection-end-line="231" selection-end-column="85" />
+          <folding>
+            <element signature="e#135#159#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/orm_version_1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5021">
+          <caret line="326" column="56" lean-forward="true" selection-start-line="326" selection-start-column="56" selection-end-line="326" selection-end-column="56" />
+          <folding>
+            <element signature="e#141#165#0" expanded="true" />
+            <marker date="1541685256520" expanded="true" signature="272:277" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="2332:2470" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="3185:3204" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="3350:3411" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="3375:3380" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="3435:3441" ph="..." />
+            <marker date="1541685256520" expanded="true" signature="3436:3437" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
