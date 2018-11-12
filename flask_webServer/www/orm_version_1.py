@@ -11,6 +11,9 @@ import asyncio, aiomysql
 import logging
 import requests
 import json
+import hashlib
+import time
+from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 
 class Base_wx(object):
@@ -32,6 +35,21 @@ class Base_wx(object):
         :return: three parameters which are appid, appsecret, apptoken
         """
         return self.__appId, self.__appSecret, self.__appToken
+
+    def token_verify(self, timestamp, nonce, signature):
+        """
+        token verify for server or order
+        :return: 1 or 0
+        """
+        args_list = [self.__appToken, timestamp, nonce]
+        args_list.sort()
+        mysha = hashlib.sha1()
+        map(mysha.update, args_list)
+        sha1 = mysha.hexdigest()
+        if sha1 == signature:
+            return 1
+        else:
+            return 0
 
     def verify_at(self):
         """
@@ -89,30 +107,116 @@ class Base_wx(object):
         resp_dict = json.loads(resp)
         return resp_dict['data']
 
-    def post_picture(self):
+    def post_picture(self, img_path):
+        """
+        save the picture as the temporary material.
+        :return:
+        """
+        at = self.get_at()
+        postdata = {
+            'media': (img_path, open(img_path, 'rb'), 'image/jpg')
+        }
+        resp = requests.post(
+            'https://api.weixin.qq.com/cgi-bin/media/upload?access_token={}&type={}'.format(at, 'image/jpg'),
+            files=postdata)
+        resp_dict = json.loads(resp.text)
+        if 'media_id' in resp_dict:
+            return resp_dict['media_id'], resp_dict['created_at']
+        else:
+            return resp_dict['errcode'], resp_dict['errmsg']
+
+    def answer_picture(self, unionId, touserName, img_path):
+        media_id, created_at = self.post_picture(img_path)
+        if media_id:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Image><MediaId>{}</MediaId></Image>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'image', media_id)
+        else:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Content></Content>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'text', 'Fail to create the qrcode.Please create again!')
+        return result_xml
+
+    def answer_text(self, unionId, touserName, text):
+        if text:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Image><MediaId>{}</MediaId></Image>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'text', text)
+        else:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Content></Content>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'text',  'Fail to answer text.Please create again!')
+        return result_xml
+
+    def answer_url(self, unionId, touserName, url):
+        if url:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Image><MediaId>{}</MediaId></Image>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'url', url)
+        else:
+            result_xml = """
+                <xml>
+                <ToUserName>{}</ToUserName>
+                <FromUserName>{}</FromUserName>
+                <CreateTime>{}</CreateTime>
+                <MsgType>{}</MsgType>
+                <Content></Content>
+                </xml>
+            """.format(unionId, touserName, time.time(), 'text', 'Fail to answer url.Please create again!')
+        return result_xml
+
+    def answer_auto(self, resp_dict, type):
+        """
+        :param resp_dict:
+        :param type:
+        :return:
+        """
+        at = self.get_at()
+        touserName = resp_dict.get('ToUserName')
+        fromuserName = resp_dict.get('FromUserName')
+        result = requests.get('https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}'.format(at, fromuserName))
+        result_dict = json.loads(result)
+        unionId = result_dict['unionid']
+        if type == 'url':
+            url = ''
+            return self.answer_url(unionId, touserName, url)
+        elif type == 'text':
+            text = ''
+            return self.answer_text(unionId, touserName, text)
+        elif type == 'img':
+            img_path = ''
+            return self.answer_picture(unionId, touserName, img_path)
         pass
-
-    def answer_auto(self):
-        pass
-
-    def answer_picture(self):
-        pass
-
-    def answer_text(self):
-        pass
-
-    def answer_url(self):
-        pass
-
-class Server_wx(Base_wx):
-
-    def __init__(self):
-        super.__init__(Server_wx)
-
-class Order_wx(Base_wx):
-
-    def __init__(self):
-        super.__init__(Server_wx)
 
 def log(sql, args=()):
     logging.info('SQL: %s' % sql)
