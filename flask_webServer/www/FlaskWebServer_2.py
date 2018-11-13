@@ -24,6 +24,10 @@ from PASS_secret import appname_lx, appid_lx, appsecret_lx, token_lx,\
     appname_aijiu, appid_aijiu, appsecret_aijiu, token_aijiu\
 # from Regex_class import RegexConverter
 
+from gevent import monkey
+from gevent.pywsgi import WSGIServer
+monkey.patch_all()
+
 app = Flask(__name__, static_url_path='')
 
 appname_server = appname_lx
@@ -406,8 +410,12 @@ def index():
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        app.run(host="0.0.0.0")
+        http_server = WSGIServer(('0.0.0.0'), app)
+        http_server.server_forever()
+        # app.run(host="0.0.0.0")
     else:
         port = int(sys.argv[1])
                 # app.debug=True
-        app.run(host="0.0.0.0", port=port)
+        http_server = WSGIServer(('0.0.0.0', port), app)
+        http_server.server_forever()
+        # app.run(host="0.0.0.0", port=port)
