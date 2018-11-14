@@ -20,12 +20,12 @@ class Base_wx(object):
     """
     create the metaclass for weixin_mps
     """
-    def __init__(self, appid, appname, appsecret, apptoken, appencodingASEKey):
+    def __init__(self, appid, appname, appsecret, apptoken, appencodingasekey):
         self.__appId = appid
         self.__appName = appname
         self.__appSecret = appsecret
         self.__appToken = apptoken
-        self.__appEncodingASEKey = appencodingASEKey
+        self.__appEncodingASEKey = appencodingasekey
         self.__access_token = ''
         self.__init_time = 0
         self.now_time = 0
@@ -125,6 +125,7 @@ class Base_wx(object):
         else:
             return resp_dict['errcode'], resp_dict['errmsg']
 
+    @staticmethod
     def answer_picture(self, unionId, touserName, img_path):
         media_id, created_at = self.post_picture(img_path)
         if media_id:
@@ -149,6 +150,7 @@ class Base_wx(object):
             """.format(unionId, touserName, time.time(), 'text', 'Fail to create the qrcode.Please create again!')
         return result_xml
 
+    @staticmethod
     def answer_text(self, unionId, touserName, text):
         if text:
             result_xml = """
@@ -172,6 +174,7 @@ class Base_wx(object):
             """.format(unionId, touserName, time.time(), 'text',  'Fail to answer text.Please create again!')
         return result_xml
 
+    @staticmethod
     def answer_url(self, unionId, touserName, url):
         if url:
             result_xml = """
@@ -195,7 +198,7 @@ class Base_wx(object):
             """.format(unionId, touserName, time.time(), 'text', 'Fail to answer url.Please create again!')
         return result_xml
 
-    def answer_auto(self, resp_dict, type):
+    def answer_auto(self, resp_dict, result):
         """
         :param resp_dict:
         :param type:
@@ -207,13 +210,13 @@ class Base_wx(object):
         result = requests.get('https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}'.format(at, fromuserName))
         result_dict = json.loads(result)
         unionId = result_dict['unionid']
-        if type == 'url':
+        if result == 'url':
             url = ''
             return self.answer_url(unionId, touserName, url)
-        elif type == 'text':
+        elif result == 'text':
             text = ''
             return self.answer_text(unionId, touserName, text)
-        elif type == 'img':
+        elif result == 'img':
             img_path = ''
             return self.answer_picture(unionId, touserName, img_path)
         pass
@@ -311,9 +314,9 @@ class TextField(Field):
 
 class ModelMetaclass(type):
 
-    def __new__(cls, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):
         if name == 'Model':
-            return type.__new__(cls, name, bases, attrs)
+            return type.__new__(mcs, name, bases, attrs)
         tableName = attrs.get('__table__', None) or name
         logging.info('found model: %s (table: %s)' % (name, tableName))
         mappings = dict()
@@ -343,7 +346,7 @@ class ModelMetaclass(type):
         attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) + 1))
         attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
         attrs['__delete__'] = 'delete from `%s` where `%s`=?' % (tableName, primaryKey)
-        return type.__new__(cls, name, bases, attrs)
+        return type.__new__(mcs, name, bases, attrs)
 
 class Model(dict, metaclass=ModelMetaclass):
 
@@ -374,7 +377,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
     @classmethod
     async def findAll(cls, where=None, args=None, **kw):
-        ' find objects by where clause. '
+        """ find objects by where clause. """
         sql = [cls.__select__]
         if where:
             sql.append('where')

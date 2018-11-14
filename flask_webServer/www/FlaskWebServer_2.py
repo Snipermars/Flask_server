@@ -44,8 +44,82 @@ lx_access_token = ''
 aijiu_access_token = ''
 
 # 确认数据库链接
-conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps')
-cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+def execute_sql(sql, **kwargs):
+    """
+    example: sql = "select count(distinct new_member) as cnt from WXmps.aijiu_member where old_member = %s and subscribe_status = '1'"
+            args <type dict>
+    :param sql:
+    :param args:
+    :return:
+    """
+    with pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps') as conn:
+        cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+        if kwargs:
+            if 'unionId' in kwargs:
+                unionId = kwargs['unionId']
+            else:
+                unionId = ''
+            if 'subscribe_status' in kwargs:
+                subscribe_status = kwargs['subscribe_status']
+            else:
+                subscribe_status = ''
+            if 'fromuserName' in kwargs:
+                fromuserName = kwargs['fromuserName']
+            else:
+                fromuserName = ''
+            if 'nickName' in kwargs:
+                nickName = kwargs['nickName']
+            else:
+                nickName = ''
+            if 'Sex' in kwargs:
+                sex = kwargs['Sex']
+            else:
+                sex = ''
+            if 'City' in kwargs:
+                city = kwargs['City']
+            else:
+                city = ''
+            if 'Province' in kwargs:
+                province = kwargs['Province']
+            else:
+                province = ''
+            if 'Country' in kwargs:
+                country = kwargs['Country']
+            else:
+                country = ''
+            if 'newMember' in kwargs:
+                new_member = kwargs['newMember']
+            else:
+                new_member = ''
+            if 'oldMember' in kwargs:
+                old_member = kwargs['oldMember']
+            else:
+                old_member = ''
+            if 'connectTime' in kwargs:
+                connect_time = kwargs['connectTime']
+            else:
+                connect_time = ''
+            if 'updateTime' in kwargs:
+                update_time = kwargs['updateTime']
+            else:
+                update_time = ''
+            if unionId != '' and subscribe_status == '1' and old_member == '':
+                cur.execute(sql % (unionId, subscribe_status))
+            elif unionId != '' and old_member != '':
+                cur.execute(sql % (fromuserName, unionId, update_time))
+            elif unionId != '' and nickName != '':
+                cur.execute(sql % (fromuserName, unionId, nickName, sex, city, province, country, update_time))
+            elif new_member != '':
+                cur.execute(sql % (new_member))
+            elif old_member != '' and new_member != '' and connect_time != '' and update_time != '':
+                cur.execute(sql % (update_time, old_member, new_member, connect_time))
+            else:
+                
+        else:
+            cur.execute(sql)
+            conn.commit()
+            ret = cur.fetchall()
+            return ret
 
 # 更新access_token
 def get_access_token(at, appid, appsecret):
@@ -85,6 +159,11 @@ def post_menu():
     					"type": "click",
     					"name": "个人二维码",
     					"key": "v10014_qrcode"
+                    },
+                    {
+                        "type": "click",
+                        "name": "我的推荐",
+                        "key": "v10015_recommendation"
                     }
     			]
     		},
@@ -150,11 +229,11 @@ def is_from_weixin(kw):
 
 # 图片合成
 def concat_qrcode(pic, is_concat=1):
-    pic1 = '/home/ubuntu/awesome-python3-webapp-master/qrcode_png/20181029192714.jpg'
+    pic1 = '/home/ubuntu/TestingWebServer-master/flask_WebServer/backup/backup.jpg'
     top_img = pic
     # 缩小图片
-    mwidth = 250
-    mheight = 250
+    mwidth = 180
+    mheight = 180
     top_img_w, top_img_h = top_img.size
     if is_concat == 0:
         return pic
@@ -170,7 +249,7 @@ def concat_qrcode(pic, is_concat=1):
     # get the size or use 150x150 if it's constant
     bottom_img_w, bottom_img_h = bottom_img.size
     # offset the top image so it's placed in the middle of the bottom image
-    offset = ((bottom_img_w - new_im_w) - 100, (bottom_img_h - new_im_h) - 750)
+    offset = ((bottom_img_w - new_im_w) - 436, (bottom_img_h - new_im_h) + 3)
     # embed top_img on top of bottom_img
     bottom_img.paste(new_im, offset)
     return bottom_img
@@ -185,9 +264,9 @@ def PostQRcode(unionid, appid):
 
 # 二维码图片保存
 def SaveQRcode(unionid, appid_order, appsecret_order, appid_server):
-    img_dir = '/home/ubuntu/awesome-python3-webapp-master/qrcode_png/'
+    img_dir = '/home/ubuntu/TestingWebServer-master/flask_WebServer/qrcode_png/'
     img_result = PostQRcode(unionid, appid_server)
-    print(img_result)
+    # print(img_result)
     if img_result:
         img_path = img_dir + unionid + '_' + appid_order + '.jpg'
         img_result.save(img_path)
@@ -203,7 +282,7 @@ def SaveQRcode(unionid, appid_order, appsecret_order, appid_server):
             'https://api.weixin.qq.com/cgi-bin/media/upload?access_token={}&type={}'.format(access_token, 'image/jpg'),
             files=postdata)
         resp_dict = json.loads(resp.text)
-        print(resp_dict)
+        # print(resp_dict)
         if 'media_id' in resp_dict:
             return resp_dict['media_id'], resp_dict['created_at']
         else:
@@ -222,10 +301,11 @@ def QrCode_order(resp_dict, event='CLICK', key='v10004_qrcode', appid_server=Non
         global aijiu_access_token
         access_token = aijiu_access_token
         aijiu_access_token = get_access_token(access_token, appid_order, appsecret_order)
-        print(aijiu_access_token+', '+fromuserName)
+        # print(aijiu_access_token+', '+fromuserName)
         result = requests.get('https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}'.format(aijiu_access_token, fromuserName))
         result_dict = json.loads(result.text)
         print(result_dict)
+        app.logger.info(str(result_dict))
         unionId = result_dict['unionid']
         media_id, created_at = SaveQRcode(unionId, appid_order, appsecret_order, appid_server)
         if media_id:
@@ -258,7 +338,7 @@ def mydirect():
     if re.search(request.path):
         return ""
     else:
-
+        return ""
 
 
 # 获取菜单点击事件
@@ -276,7 +356,7 @@ def clickHandler():
     nonce = request.args.get('nonce')
     signature = request.args.get('signature')
     args_order = {'token': token_o, 'timestamp': timestamp, 'nonce': nonce, 'signature': signature}
-    print(args_order)
+    # print(args_order)
     if is_from_weixin(args_order): #  and not is_from_weixin(args_server):
         resp_data = request.data
         resp_dict = xmltodict.parse(resp_data).get('xml')
@@ -285,6 +365,22 @@ def clickHandler():
         if event == 'CLICK' and eventkey == 'v10004_qrcode':
             result_xml = QrCode_order(resp_dict=resp_dict, appid_server=appid_s,\
                                       appid_order=appid_o, appsecret_order=appsecret_o)
+            return result_xml
+        elif event == 'CLICK' and eventkey == 'v10015_recommendation':
+            fromuserName = resp_dict.get('FromUserName')
+            touserName = resp_dict.get('ToUserName')
+
+            cnt = ret[0]['cnt']
+            text = '您已经推荐了%s个成员，棒棒哒。' % cnt
+            result_xml = """
+                                        <xml>
+                                        <ToUserName>{}</ToUserName>
+                                        <FromUserName>{}</FromUserName>
+                                        <CreateTime>{}</CreateTime>
+                                        <MsgType>{}</MsgType>
+                                        <Content>{}</Content>
+                                        </xml>
+                                    """.format(fromuserName, touserName, time.time(), 'text', text)
             return result_xml
         elif resp_dict.get('Event') == 'subscribe':
             fromuserName = resp_dict.get('FromUserName')
@@ -353,7 +449,19 @@ def clickHandler():
             else:
                 return ""
         else:
-            return ""
+            fromuserName = resp_dict.get('FromUserName')
+            touserName = resp_dict.get('ToUserName')
+            text = '抱歉，自动回复系统正在维护中，将于近日上线，请您谅解。'
+            result_xml = """
+                            <xml>
+                            <ToUserName>{}</ToUserName>
+                            <FromUserName>{}</FromUserName>
+                            <CreateTime>{}</CreateTime>
+                            <MsgType>{}</MsgType>
+                            <Content>{}</Content>
+                            </xml>
+                        """.format(fromuserName, touserName, time.time(), 'text', text)
+            return result_xml
     else:
         return ""
 
