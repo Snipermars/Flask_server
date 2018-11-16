@@ -4,7 +4,7 @@
 @ProjectDistribution:
 @Time: 2018/10/31 11:26
 @Author: Marus
-@Function:FlaskWebServer_2.py
+@Function:FlaskWebServer.py
 """
 
 import sys
@@ -44,7 +44,7 @@ lx_access_token = ''
 aijiu_access_token = ''
 
 # 确认数据库链接
-def execute_sql(sql, **kwargs):
+def execute_sql(sql=None, event=None, **kwargs):
     """
     example: sql = "select count(distinct new_member) as cnt from WXmps.aijiu_member where old_member = %s and subscribe_status = '1'"
             args <type dict>
@@ -52,8 +52,9 @@ def execute_sql(sql, **kwargs):
     :param args:
     :return:
     """
-    with pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps') as conn:
-        cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    with pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps', autocommit=True,
+                         cursorclass=pymysql.cursors.DictCursor) as conn:
+        cur = conn.cursor()
         if kwargs:
             if 'unionId' in kwargs:
                 unionId = kwargs['unionId']
@@ -103,25 +104,50 @@ def execute_sql(sql, **kwargs):
                 update_time = kwargs['updateTime']
             else:
                 update_time = ''
-            if unionId != '' and subscribe_status == '1' and old_member == '':
-                cur.execute(sql % (unionId, subscribe_status))
-            elif unionId != '' and old_member != '':
-                cur.execute(sql % (fromuserName, unionId, update_time))
-            elif unionId != '' and nickName != '':
-                cur.execute(sql % (fromuserName, unionId, nickName, sex, city, province, country, update_time))
-            elif new_member != '':
-                cur.execute(sql % (new_member))
-            elif old_member != '' and new_member != '' and connect_time != '' and update_time != '':
-                cur.execute(sql % (update_time, old_member, new_member, connect_time))
+            if 'createTime' in kwargs:
+                create_time = kwargs['createTime']
             else:
-                
+                create_time = ''
+
+        if event == 'Select':
+            if old_member != '':
+                # select count(distinct new_member) as cnt from WXmps.followers where old_member = '%s' and subscribe_status = '1'
+                cur.execute(sql % old_member)
+            elif new_member != '':
+                # select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1
+                cur.execute(sql % new_member)
+            else:
+                return
+        elif event == 'Update':
+            if old_member != "" and new_member != '' and connect_time != '' and update_time != ''\
+                    and subscribe_status == '1':
+                cur.execute(sql % (subscribe_status, update_time, old_member, new_member, connect_time))
+            elif old_member != "" and new_member != '' and connect_time != '' and update_time != ''\
+                    and subscribe_status == '0':
+                cur.execute(sql % (subscribe_status, update_time, old_member, new_member, connect_time))
+            else:
+                return
+        elif event == 'Insert':
+            if fromuserName != '' and unionId != '' and update_time != '' and connect_time == '' and sex == '':
+                cur.execute(sql , (str(fromuserName), str(unionId), update_time))
+            elif fromuserName != '' and unionId != '' and nickName != '' and sex != '' \
+                and city != '' and province != '' and country != '' and update_time != '':
+                cur.execute(sql , (str(fromuserName), str(unionId), nickName, sex, city, province, country, update_time))
+            elif old_member != '' and new_member != '' and connect_time != '' and subscribe_status != '' \
+                and create_time != '' and update_time != '':
+                cur.execute(sql , (str(old_member), str(new_member), connect_time, subscribe_status, create_time, \
+                                   update_time))
+            else:
+                return
         else:
             cur.execute(sql)
-            conn.commit()
-            ret = cur.fetchall()
+        ret = cur.fetchall()
+        if ret:
             return ret
+        else:
+            return ''
 
-# 更新access_token
+        # 更新access_token
 def get_access_token(at, appid, appsecret):
     resp_check = requests.get(url='https://api.weixin.qq.com/cgi-bin/user/get?access_token={}'.format(at))
     resp_check_dict = json.loads(resp_check.text)
@@ -291,8 +317,8 @@ def SaveQRcode(unionid, appid_order, appsecret_order, appid_server):
         return '', ''
 
 # 菜单时间处理
-def QrCode_order(resp_dict, event='CLICK', key='v10004_qrcode', appid_server=None, appid_order=None, appsecret_order=None):
-    if event != 'CLICK' and key != 'v10004_qrcode':
+def QrCode_order(resp_dict, event='CLICK', key='v10014_qrcode', appid_server=None, appid_order=None, appsecret_order=None):
+    if event != 'CLICK' and key != 'v10014_qrcode':
         return ''
     else:
         touserName = resp_dict.get('ToUserName')
@@ -362,15 +388,25 @@ def clickHandler():
         resp_dict = xmltodict.parse(resp_data).get('xml')
         event = resp_dict.get('Event')
         eventkey = resp_dict.get('EventKey')
-        if event == 'CLICK' and eventkey == 'v10004_qrcode':
+        if event == 'CLICK' and eventkey == 'v10014_qrcode':
             result_xml = QrCode_order(resp_dict=resp_dict, appid_server=appid_s,\
                                       appid_order=appid_o, appsecret_order=appsecret_o)
             return result_xml
         elif event == 'CLICK' and eventkey == 'v10015_recommendation':
             fromuserName = resp_dict.get('FromUserName')
             touserName = resp_dict.get('ToUserName')
-
-            cnt = ret[0]['cnt']
+            global aijiu_access_token
+            access_token = aijiu_access_token
+            aijiu_access_token = get_access_token(access_token, appid_order, appsecret_order)
+            # print(aijiu_access_token+', '+fromuserName)
+            result = requests.get(
+                'https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}'.format(aijiu_access_token,
+                                                                                               fromuserName))
+            result_dict = json.loads(result.text)
+            unionId = result_dict['unionid']
+            sql = "select count(distinct new_member) as cnt from WXmps.followers where old_member = '%s' and subscribe_status = '1'" % unionId
+            ret_result = execute_sql(sql=sql, event='Select', oldMember=unionId)
+            cnt = ret_result[0]['cnt']
             text = '您已经推荐了%s个成员，棒棒哒。' % cnt
             result_xml = """
                                         <xml>
@@ -398,28 +434,25 @@ def clickHandler():
             province = resp_dict2['province']
             country = resp_dict2['country']
             t = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-            cur.execute(
-                "insert into WXmps.aijiu_member(OpenId, UnionId, update_time) values(%s,%s,%s)", (str(fromuserName), str(unionId), t))
-            cur.execute(
-                "insert into WXmps.aijiu_member_info(OpenId, UnionId, NickName, Sex, City, Province, Country, update_time) "\
-                "values(%s, %s, %s, %s, %s, %s, %s, %s)", (str(fromuserName), str(unionId), nickName, Sex, city,\
-                                                         province, country, t))
-            conn.commit()
-            cur.execute(
-                "select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1" % str(
-                    unionId))
-            ret = cur.fetchall()
-            if ret:
-                old_t = time.mktime(time.strptime(ret[0]['connect_time'].strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"))
+            sql = "insert into WXmps.aijiu_member(OpenId, UnionId, update_time) values(%s,%s,%s)"
+            result_ret1 = execute_sql(sql=sql, event='Insert', fromuserName=fromuserName, unionId=unionId, updateTime=t)
+            sql = "insert into WXmps.aijiu_member_info(OpenId, UnionId, NickName, Sex, City, Province, Country, update_time) "\
+                "values(%s, %s, %s, %s, %s, %s, %s, %s)"
+            result_ret2 = execute_sql(sql=sql, event='Insert', fromuserName=fromuserName, unionId=unionId,
+                                      nickName=nickName, Sex=Sex, City=city, Province=province, Country=country, updateTime=t)
+            sql = "select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1"
+            result_ret3 = execute_sql(sql=sql, event='Select', newMember=unionId)
+            if result_ret3:
+                old_t = time.mktime(time.strptime(result_ret3[0]['connect_time'].strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"))
                 now_t = time.time()
-                old = ret[0]['old_member']
-                new = ret[0]['new_member']
-                connect_time = ret[0]['connect_time']
+                old = result_ret3[0]['old_member']
+                new = result_ret3[0]['new_member']
+                connect_time = result_ret3[0]['connect_time']
                 if now_t - old_t <= 600:
-                    cur.execute(
-                        "UPDATE WXmps.followers set subscribe_status = '1', update_time = '%s'"\
-                        "WHERE old_member = '%s' and new_member = '%s' and connect_time = '%s'" % (t, old, new, connect_time))
-                conn.commit()
+                    sql = "UPDATE WXmps.followers set subscribe_status = '1', update_time = '%s'"\
+                        "WHERE old_member = '%s' and new_member = '%s' and connect_time = '%s'"
+                    result_ret4 = execute_sql(sql=sql, event='Update', subscribe_status='1', updateTime=t,
+                                              oldMember=old, newMember=new, connectTime=connect_time)
                 return ""
             else:
                 return ""
@@ -435,16 +468,17 @@ def clickHandler():
             resp_dict2 = json.loads(resp2.text)
             unionId = resp_dict2['unionid']
             t = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-            cur.execute("select * from WXmps.followers where new_member = '%s'" % str(unionId))
-            ret = cur.fetchall()
-            print(ret)
-            if ret:
-                old = ret[0]['old_member']
-                new = ret[0]['new_member']
-                connect_time = ret[0]['connect_time']
-                cur.execute("UPDATE WXmps.followers set subscribe_status = '0', update_time = '%s'"\
-                            " WHERE old_member = '%s' and new_member = '%s' and connect_time = '%s';" % (t, old, new, connect_time))
-                conn.commit()
+            sql = "select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1"
+            result_ret5 = execute_sql(sql=sql, event='Select', unionId=unionId)
+            print(result_ret5)
+            if result_ret5:
+                old = result_ret5[0]['old_member']
+                new = result_ret5[0]['new_member']
+                connect_time = result_ret5[0]['connect_time']
+                sql = "UPDATE WXmps.followers set subscribe_status = '%s', update_time = '%s'" \
+                      "WHERE old_member = '%s' and new_member = '%s' and connect_time = '%s'"
+                result_ret6 = execute_sql(sql=sql, event='Update', subscribe_status='0', updateTime=t,
+                                          oldMember=old, newMember=new, connect_time=connect_time)
                 return ""
             else:
                 return ""
@@ -499,12 +533,14 @@ def index():
         print(resp_dict)
         unionId = resp_dict['unionid']
         t = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-        cur.execute("insert into WXmps.followers(old_member, new_member, connect_time, subscribe_status, create_time, update_time) values(%s,%s,%s,%s,%s,%s)", (str(state), str(unionId), t, "0", t, t))
-        conn.commit()
+        sql = "insert into WXmps.followers(old_member, new_member, connect_time, subscribe_status, create_time, " \
+              "update_time) values(%s,%s,%s,%s,%s,%s)"
+        result_ret7 = execute_sql(sql=sql, event='Insert', oldMember=state, newMember=unionId, connectTime=t, subscribe_status='0', createTime=t, updateTime=t)
         # 判断是否关注应该在另一个维度
-        # url = 'https://mp.weixin.qq.com/s?__biz=MzUzNDk2ODE3Nw==&mid=100001640&idx=1&sn=5334d2ec5424bdc9b664e015ff337ac3&chksm=7a8de5764dfa6c6017d8710e114839d40bb915dc5113fb1a307f6d3a2666efa8939e18f3636b&mpshare=1&scene=1&srcid=10264CB412pHCzOtGsCsz7c1#rd'
-        # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNDk2ODE3Nw==&chksm==&scene=110#wechat_redirect'
-        url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNDk2ODE3Nw==&wechat_webview_type=1&#wechat_redirect'
+        # 关注页
+        # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNDk2ODE3Nw==&wechat_webview_type=1&#wechat_redirect'
+        # 素材页
+        url = 'https://mp.weixin.qq.com/s?__biz=MzUzNDk2ODE3Nw==&mid=100001788&idx=1&sn=3006adb45440eb754dd69a0007447ffb&chksm=7a8de5e24dfa6cf4e452b69133cd0c3cd2195f4ed3e16c46ec291406fc5ef6f0b6605cda40d2&mpshare=1&scene=1&srcid=11147dk6bwNSgStEkFerTnMO#rd'
         # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5ODczMTYxNA==&chksm==&scene=110#wechat_redirect'
         return redirect(url)
     else:

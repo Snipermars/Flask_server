@@ -312,6 +312,17 @@ class TextField(Field):
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default)
 
+class DateTimeField(Field):
+
+    def __init__(self, name=None, default=datetime.now):
+        super().__init__(name, 'datetime', False, default)
+
+class DateField(Field):
+
+    def __init__(self, name=None, default=datetime.now):
+        super().__init__(name, 'date', False, default)
+
+
 class ModelMetaclass(type):
 
     def __new__(mcs, name, bases, attrs):
