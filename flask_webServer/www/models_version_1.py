@@ -9,7 +9,9 @@
 
 import time, uuid
 import requests, json
-from orm_version_1 import Base_wx, Model, StringField, BooleanField, FloatField, TextField
+from PIL import Image
+import qrcode
+from orm_version_1 import Base_wx, Model, StringField, BooleanField, FloatField, TextField, IntegerField, DateTimeField
 from datetime import datetime
 
 
@@ -35,30 +37,51 @@ class ClickEvent(Model):
     clickuserName = StringField(ddl='varchar(80)')
     clickTime = StringField(ddl='varchar(50)')
 
-class Subscibe(Model):
-    __table__ = 'subscribe'
+class SubscribeEvent(Model):
+    __table__ = 'subscribe_event'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    subuserName = StringField(ddl='varchar(80)')
-    status = BooleanField()
-    created_at = StringField(ddl='varchar(50)')
-    update_at = StringField(ddl='varchar(50)')
+    event_id = IntegerField(ddl='int')
+    event_time = DateTimeField(ddl='datetime')
+    event_type = StringField(ddl='varchar(50)')
+    send_id = StringField(ddl='varchar(100)')
+    union_id = StringField(ddl='varchar(100)')
+    create_time = DateTimeField(ddl='datetime')
 
-
-class UnSubscibe(Model):
-    __table__ = 'subscribe'
+class MenuEvent(Model):
+    __table__ = 'menu_event'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    subuserName = StringField(ddl='varchar(80)')
-    status = BooleanField()
-    created_at = StringField(ddl='varchar(50)')
-    update_at = StringField(ddl='varchar(50)')
+    menu_id = StringField(ddl='varchar(50)')
+    menu_name = StringField(ddl='varchar(50)')
+    menu_event = StringField(ddl='varchar(50)')
+    click_num = IntegerField(ddl='int')
+    update_time = DateTimeField(ddl='datetime')
+    create_time = DateTimeField(ddl='datetime')
 
 class Message(Model):
-    pass
+    __table__ = 'message'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    send_id = StringField(ddl='varchar(100)')
+    union_id = StringField(ddl='varchar(100)')
+    message = TextField(ddl='text')
+    message_type = StringField(ddl='varchar(50)')
+    send_time = DateTimeField(ddl='datetime')
+
+class ViewEvent(Model):
+    __table__ = 'view_event'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    send_id = StringField(ddl='varchar(100)')
+    from_id = StringField(ddl='varchar(100)')
+    union_id = StringField(ddl='varchar(100)')
+    view_time = DateTimeField(ddl='datetime')
 
 class Server_wx(Base_wx):
-
+    """
+    Server WeChat Public Number
+    """
     def __init__(self, name):
         super.__init__(Server_wx)
 
@@ -71,7 +94,43 @@ class Server_wx(Base_wx):
         at = self.__print_at()
         return at
 
-    def get_member_info_by_code(self, code, state):
+    def return_qrcode_img(self, state):
+        redirect_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?redirect_uri=http%3A%2F%2Fapi.health.92wan.com%2F&scope=snsapi_userinfo&response_type=code&appid={}&state={}#wechat_redirect'.format(
+            self.__appId, state)
+        qrcode_img = qrcode.make(redirect_url)
+        return qrcode_img
+
+    def return_concat_img(self, state, is_concat=1):
+        qrcode_img = self.return_qrcode_img(state)
+        pic1 = '/home/ubuntu/TestingWebServer-master/flask_webServer/backup/backup.jpg'
+        top_img = qrcode_img
+        # 缩小图片
+        mwidth = 180
+        mheight = 180
+        top_img_w, top_img_h = top_img.size
+        if is_concat == 0:
+            return qrcode_img
+        if (1.0 * top_img_w / mwidth) > (1.0 * top_img_h / mheight):
+            scale = 1.0 * top_img_w / mwidth
+            new_im = top_img.resize((int(top_img_w / scale), int(top_img_h / scale)), Image.ANTIALIAS)
+        else:
+            scale = 1.0 * top_img_h / mheight
+            new_im = top_img.resize((int(top_img_w / scale), int(top_img_h / scale)), Image.ANTIALIAS)
+        new_im_w, new_im_h = new_im.size
+        # load in the bottom image
+        bottom_img = Image.open(pic1, 'r')
+        # get the size or use 150x150 if it's constant
+        bottom_img_w, bottom_img_h = bottom_img.size
+        # offset the top image so it's placed in the middle of the bottom image
+        offset = ((bottom_img_w - new_im_w) - 436, (bottom_img_h - new_im_h) + 3)
+        # embed top_img on top of bottom_img
+        bottom_img.paste(new_im, offset)
+        img_dir = '/home/ubuntu/TestingWebServer-master/flask_webServer/qrcode_png/'
+        img_path = img_dir + state + '.jpg'
+        bottom_img.save(img_path)
+        return img_path
+
+    def get_member_info_by_code(self, code):
         """
         use the special way by using the return-parameters code
         :param code:

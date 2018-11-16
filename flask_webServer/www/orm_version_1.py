@@ -125,7 +125,6 @@ class Base_wx(object):
         else:
             return resp_dict['errcode'], resp_dict['errmsg']
 
-    @staticmethod
     def answer_picture(self, unionId, touserName, img_path):
         media_id, created_at = self.post_picture(img_path)
         if media_id:
@@ -150,7 +149,6 @@ class Base_wx(object):
             """.format(unionId, touserName, time.time(), 'text', 'Fail to create the qrcode.Please create again!')
         return result_xml
 
-    @staticmethod
     def answer_text(self, unionId, touserName, text):
         if text:
             result_xml = """
@@ -174,7 +172,6 @@ class Base_wx(object):
             """.format(unionId, touserName, time.time(), 'text',  'Fail to answer text.Please create again!')
         return result_xml
 
-    @staticmethod
     def answer_url(self, unionId, touserName, url):
         if url:
             result_xml = """
@@ -321,7 +318,6 @@ class DateField(Field):
 
     def __init__(self, name=None, default=datetime.now):
         super().__init__(name, 'date', False, default)
-
 
 class ModelMetaclass(type):
 

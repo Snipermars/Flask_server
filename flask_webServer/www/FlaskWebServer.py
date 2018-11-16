@@ -10,15 +10,17 @@
 import sys
 sys.path.append(r'/home/ubuntu/TestingWebServer-master/flask_webServer/config')
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, make_response, jsonify, render_template, send_file
 import hashlib
 import xmltodict
+import time
 from PIL import Image
 import qrcode
 import time
 import requests
 import json
 import pymysql
+import logging
 from datetime import datetime
 from PASS_secret import appname_lx, appid_lx, appsecret_lx, token_lx,\
     appname_aijiu, appid_aijiu, appsecret_aijiu, token_aijiu\
@@ -52,9 +54,8 @@ def execute_sql(sql=None, event=None, **kwargs):
     :param args:
     :return:
     """
-    with pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps', autocommit=True,
-                         cursorclass=pymysql.cursors.DictCursor) as conn:
-        cur = conn.cursor()
+    with pymysql.connect(host='localhost', port=3306, user='root', passwd='lpd.com312', db='WXmps', autocommit=True, cursorclass=pymysql.cursors.DictCursor) as cur:
+        # cur = conn.cursor()
         if kwargs:
             if 'unionId' in kwargs:
                 unionId = kwargs['unionId']
@@ -112,19 +113,17 @@ def execute_sql(sql=None, event=None, **kwargs):
         if event == 'Select':
             if old_member != '':
                 # select count(distinct new_member) as cnt from WXmps.followers where old_member = '%s' and subscribe_status = '1'
-                cur.execute(sql % old_member)
+                cur.execute(sql % str(old_member))
             elif new_member != '':
                 # select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1
-                cur.execute(sql % new_member)
+                cur.execute(sql % str(new_member))
             else:
                 return
         elif event == 'Update':
             if old_member != "" and new_member != '' and connect_time != '' and update_time != ''\
-                    and subscribe_status == '1':
-                cur.execute(sql % (subscribe_status, update_time, old_member, new_member, connect_time))
-            elif old_member != "" and new_member != '' and connect_time != '' and update_time != ''\
-                    and subscribe_status == '0':
-                cur.execute(sql % (subscribe_status, update_time, old_member, new_member, connect_time))
+                    and subscribe_status != '':
+                print(sql)
+                cur.execute(sql % (subscribe_status, update_time, str(old_member), str(new_member), connect_time))
             else:
                 return
         elif event == 'Insert':
@@ -135,8 +134,7 @@ def execute_sql(sql=None, event=None, **kwargs):
                 cur.execute(sql , (str(fromuserName), str(unionId), nickName, sex, city, province, country, update_time))
             elif old_member != '' and new_member != '' and connect_time != '' and subscribe_status != '' \
                 and create_time != '' and update_time != '':
-                cur.execute(sql , (str(old_member), str(new_member), connect_time, subscribe_status, create_time, \
-                                   update_time))
+                cur.execute(sql, (str(old_member), str(new_member), connect_time, subscribe_status, create_time, update_time))
             else:
                 return
         else:
@@ -148,10 +146,12 @@ def execute_sql(sql=None, event=None, **kwargs):
             return ''
 
         # 更新access_token
+
+# 更新access_token
 def get_access_token(at, appid, appsecret):
     resp_check = requests.get(url='https://api.weixin.qq.com/cgi-bin/user/get?access_token={}'.format(at))
     resp_check_dict = json.loads(resp_check.text)
-    if 'errcode' in resp_check_dict:
+    if 'errcode' in resp_check_dict: # and resp_check_dict['errcode'] == 41001:
         resp = requests.get(url='https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s' % (appid, appsecret))
         resp_dict = json.loads(resp.text)
         access_token = resp_dict['access_token']
@@ -185,7 +185,7 @@ def post_menu():
     					"type": "click",
     					"name": "个人二维码",
     					"key": "v10014_qrcode"
-                    },
+                    }
                     {
                         "type": "click",
                         "name": "我的推荐",
@@ -247,7 +247,7 @@ def is_from_weixin(kw):
         mysha = hashlib.sha1()
         map(mysha.update, args_list)
         sha1 = mysha.hexdigest()
-        app.logger.debug('%s' % sha1)
+        app.logger.info('%s' % sha1)
         if sha1 == kw['signature']:
             return 1
         else:
@@ -255,7 +255,7 @@ def is_from_weixin(kw):
 
 # 图片合成
 def concat_qrcode(pic, is_concat=1):
-    pic1 = '/home/ubuntu/TestingWebServer-master/flask_WebServer/backup/backup.jpg'
+    pic1 = '/home/ubuntu/TestingWebServer-master/flask_webServer/backup/backup.jpg'
     top_img = pic
     # 缩小图片
     mwidth = 180
@@ -290,7 +290,7 @@ def PostQRcode(unionid, appid):
 
 # 二维码图片保存
 def SaveQRcode(unionid, appid_order, appsecret_order, appid_server):
-    img_dir = '/home/ubuntu/TestingWebServer-master/flask_WebServer/qrcode_png/'
+    img_dir = '/home/ubuntu/TestingWebServer-master/flask_webServer/qrcode_png/'
     img_result = PostQRcode(unionid, appid_server)
     # print(img_result)
     if img_result:
@@ -317,7 +317,7 @@ def SaveQRcode(unionid, appid_order, appsecret_order, appid_server):
         return '', ''
 
 # 菜单时间处理
-def QrCode_order(resp_dict, event='CLICK', key='v10014_qrcode', appid_server=None, appid_order=None, appsecret_order=None):
+def QrCode_order(resp_dict, event='CLICK', key='v10004_qrcode', appid_server=None, appid_order=None, appsecret_order=None):
     if event != 'CLICK' and key != 'v10014_qrcode':
         return ''
     else:
@@ -356,17 +356,6 @@ def QrCode_order(resp_dict, event='CLICK', key='v10014_qrcode', appid_server=Non
             """.format(fromuserName, touserName, time.time(), 'text', 'Fail to create the qrcode.Please create again!')
         return result_xml
 
-# 请求预处理
-@app.before_request
-def mydirect():
-    import re
-    re_likephp = re.compile('(.*?).php')
-    if re.search(request.path):
-        return ""
-    else:
-        return ""
-
-
 # 获取菜单点击事件
 @app.route('/', methods=['POST'])
 def clickHandler():
@@ -404,10 +393,11 @@ def clickHandler():
                                                                                                fromuserName))
             result_dict = json.loads(result.text)
             unionId = result_dict['unionid']
-            sql = "select count(distinct new_member) as cnt from WXmps.followers where old_member = '%s' and subscribe_status = '1'" % unionId
+            sql = "select count(distinct new_member) as cnt from WXmps.followers where old_member = '%s' and subscribe_status = '1'"
             ret_result = execute_sql(sql=sql, event='Select', oldMember=unionId)
+            print(ret_result)
             cnt = ret_result[0]['cnt']
-            text = '您已经推荐了%s个成员，棒棒哒。' % cnt
+            text = '您已经推荐成功了%s位成员，请继续努力哦。' % cnt
             result_xml = """
                                         <xml>
                                         <ToUserName>{}</ToUserName>
@@ -429,28 +419,28 @@ def clickHandler():
             resp_dict2 = json.loads(resp2.text)
             unionId = resp_dict2['unionid']
             nickName = resp_dict2['nickname']
-            Sex = resp_dict2['sex']
+            sex = resp_dict2['sex']
             city = resp_dict2['city']
             province = resp_dict2['province']
             country = resp_dict2['country']
             t = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
             sql = "insert into WXmps.aijiu_member(OpenId, UnionId, update_time) values(%s,%s,%s)"
             result_ret1 = execute_sql(sql=sql, event='Insert', fromuserName=fromuserName, unionId=unionId, updateTime=t)
-            sql = "insert into WXmps.aijiu_member_info(OpenId, UnionId, NickName, Sex, City, Province, Country, update_time) "\
+            sql = "insert into WXmps.aijiu_member_info(OpenId, UnionId, NickName, Sex, City, Province, Country, update_time) " \
                 "values(%s, %s, %s, %s, %s, %s, %s, %s)"
-            result_ret2 = execute_sql(sql=sql, event='Insert', fromuserName=fromuserName, unionId=unionId,
-                                      nickName=nickName, Sex=Sex, City=city, Province=province, Country=country, updateTime=t)
+            result_ret2 = execute_sql(sql=sql, event='Insert', fromuserName=fromuserName, unionId=unionId, nickName=nickName, Sex=sex, City=city, Province=province, Country=country, updateTime=t)
             sql = "select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1"
             result_ret3 = execute_sql(sql=sql, event='Select', newMember=unionId)
             if result_ret3:
                 old_t = time.mktime(time.strptime(result_ret3[0]['connect_time'].strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"))
                 now_t = time.time()
+                print(result_ret3)
                 old = result_ret3[0]['old_member']
                 new = result_ret3[0]['new_member']
                 connect_time = result_ret3[0]['connect_time']
                 if now_t - old_t <= 600:
-                    sql = "UPDATE WXmps.followers set subscribe_status = '1', update_time = '%s'"\
-                        "WHERE old_member = '%s' and new_member = '%s' and connect_time = '%s'"
+                    sql = "UPDATE WXmps.followers set subscribe_status = %s, update_time = %s"\
+                        "WHERE old_member = %s and new_member = %s and connect_time = %s"
                     result_ret4 = execute_sql(sql=sql, event='Update', subscribe_status='1', updateTime=t,
                                               oldMember=old, newMember=new, connectTime=connect_time)
                 return ""
@@ -466,6 +456,7 @@ def clickHandler():
                 'https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}'.format(access_token,
                                                                                                fromuserName))
             resp_dict2 = json.loads(resp2.text)
+            print(resp_dict2)
             unionId = resp_dict2['unionid']
             t = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
             sql = "select * from WXmps.followers where new_member = '%s' order by connect_time desc limit 1"
@@ -537,9 +528,9 @@ def index():
               "update_time) values(%s,%s,%s,%s,%s,%s)"
         result_ret7 = execute_sql(sql=sql, event='Insert', oldMember=state, newMember=unionId, connectTime=t, subscribe_status='0', createTime=t, updateTime=t)
         # 判断是否关注应该在另一个维度
-        # 关注页
+        # url = 'https://mp.weixin.qq.com/s?__biz=MzUzNDk2ODE3Nw==&mid=100001640&idx=1&sn=5334d2ec5424bdc9b664e015ff337ac3&chksm=7a8de5764dfa6c6017d8710e114839d40bb915dc5113fb1a307f6d3a2666efa8939e18f3636b&mpshare=1&scene=1&srcid=10264CB412pHCzOtGsCsz7c1#rd'
+        # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNDk2ODE3Nw==&chksm==&scene=110#wechat_redirect'
         # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNDk2ODE3Nw==&wechat_webview_type=1&#wechat_redirect'
-        # 素材页
         url = 'https://mp.weixin.qq.com/s?__biz=MzUzNDk2ODE3Nw==&mid=100001788&idx=1&sn=3006adb45440eb754dd69a0007447ffb&chksm=7a8de5e24dfa6cf4e452b69133cd0c3cd2195f4ed3e16c46ec291406fc5ef6f0b6605cda40d2&mpshare=1&scene=1&srcid=11147dk6bwNSgStEkFerTnMO#rd'
         # url = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5ODczMTYxNA==&chksm==&scene=110#wechat_redirect'
         return redirect(url)
@@ -553,13 +544,19 @@ def index():
 #        return ""
 
 if __name__ == '__main__':
+    handler = logging.FileHandler('flask.log')
+    app.logger.addHandler(handler)
+    handler.setLevel(logging.DEBUG)
+    logging_format = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
+    handler.setFormatter(logging_format)
     if len(sys.argv) == 1:
         http_server = WSGIServer(('0.0.0.0'), app)
-        http_server.server_forever()
+        http_server.serve_forever()
         # app.run(host="0.0.0.0")
     else:
         port = int(sys.argv[1])
                 # app.debug=True
         http_server = WSGIServer(('0.0.0.0', port), app)
-        http_server.server_forever()
+        http_server.serve_forever()
         # app.run(host="0.0.0.0", port=port)
