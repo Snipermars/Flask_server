@@ -13,6 +13,7 @@ import requests
 import json
 import hashlib
 import time
+import pymysql
 from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 
@@ -231,6 +232,7 @@ async def create_pool(loop, **kw):
         password=kw['password'],
         db=kw['db'],
         charset=kw.get('charset', 'utf8'),
+        cursorclass=pymysql.cursors.DictCursor,
         autocommit=kw.get('autocommit', True),
         maxsize=kw.get('maxsize', 10),
         minsize=kw.get('minsize', 1),
@@ -261,7 +263,7 @@ async def execute(sql, args, autocommit=True):
                 affected = cur.rowcount
             if not autocommit:
                 await conn.commit()
-        except BaseException as e:
+        except BaseException:
             if not autocommit:
                 await conn.rollback()
             raise

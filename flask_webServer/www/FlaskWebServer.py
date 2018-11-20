@@ -178,14 +178,14 @@ def post_menu():
     				},
     				{
     					"type": "view",
-    					"name": "产品合作",
+    					"name": "产品介绍",
     					"url": "http://mp.weixin.qq.com/mp/homepage?__biz=MzUzNDk2ODE3Nw==&hid=21&sn=4b9c943d1bf43994418aefca8988d198&scene=18#wechat_redirect"
     				},
     				{
     					"type": "click",
     					"name": "个人二维码",
     					"key": "v10014_qrcode"
-                    }
+                    },
                     {
                         "type": "click",
                         "name": "我的推荐",

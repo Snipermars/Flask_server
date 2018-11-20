@@ -22,6 +22,7 @@ class User(Model):
     __table__ = 'users'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    unionId = StringField(ddl='varchar(80)')
     nickName = StringField(ddl='varchar(50)')
     Sex = StringField(ddl='varchar(20)')
     City = StringField(ddl='varchar(50)')
@@ -29,19 +30,26 @@ class User(Model):
     Country = StringField(ddl='varchar(50)')
     created_at = StringField(ddl='varchar(50)')
 
+class UserRe(Model):
+    __table__ = 'user_re'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    referrer = StringField(ddl='varchar(80)')
+    referee = StringField(ddl='varchar(80)')
+    createTime = StringField(ddl='datetime')
+
 class ClickEvent(Model):
     __table__ = 'clickevent'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
     fromuserName = StringField(ddl='varchar(80)')
     clickuserName = StringField(ddl='varchar(80)')
-    clickTime = StringField(ddl='varchar(50)')
+    clickTime = StringField(ddl='datetime')
 
 class SubscribeEvent(Model):
     __table__ = 'subscribe_event'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    event_id = IntegerField(ddl='int')
     event_time = DateTimeField(ddl='datetime')
     event_type = StringField(ddl='varchar(50)')
     send_id = StringField(ddl='varchar(100)')
@@ -56,7 +64,6 @@ class MenuEvent(Model):
     menu_name = StringField(ddl='varchar(50)')
     menu_event = StringField(ddl='varchar(50)')
     click_num = IntegerField(ddl='int')
-    update_time = DateTimeField(ddl='datetime')
     create_time = DateTimeField(ddl='datetime')
 
 class Message(Model):
